@@ -44,9 +44,7 @@
         </button>
         <a href="#waitlist" class="btn btn-primary">Join the Waitlist</a>
       </div>
-      <button class="mobile-nav-toggle" aria-label="Menu">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
-      </button>
+
     </div>
   </header>
 
@@ -339,7 +337,7 @@
           <p class="section-desc" style="margin-inline: auto; text-align: center;">Early members get first access to cohort selection and launch events. Spots are limited.</p>
         </div>
 
-        <form class="waitlist-form reveal reveal-delay-1" id="waitlistForm" onsubmit="return false;">
+        <form class="waitlist-form reveal reveal-delay-1" id="waitlistForm">
           <div class="form-row form-row-half">
             <div class="form-field">
               <label for="firstName">First Name</label>
@@ -516,11 +514,8 @@
     // Header scroll state
     (function () {
       const header = document.getElementById('siteHeader');
-      let last = 0;
       window.addEventListener('scroll', () => {
-        const y = window.scrollY;
-        header.classList.toggle('scrolled', y > 50);
-        last = y;
+        header.classList.toggle('scrolled', window.scrollY > 50);
       }, { passive: true });
     })();
 
@@ -600,7 +595,9 @@
     // Smooth scroll for anchor links
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
       anchor.addEventListener('click', function (e) {
-        const target = document.querySelector(this.getAttribute('href'));
+        const href = this.getAttribute('href');
+        if (href === '#' || href.length < 2) return;
+        const target = document.querySelector(href);
         if (target) {
           e.preventDefault();
           target.scrollIntoView({ behavior: 'smooth' });

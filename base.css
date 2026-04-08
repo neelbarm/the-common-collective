@@ -61,7 +61,7 @@ p, li, figcaption {
 }
 
 ::selection {
-  background: oklch(from var(--color-primary) l c h / 0.2);
+  background: rgba(139, 107, 74, 0.2);
   color: var(--color-text);
 }
 
