@@ -321,28 +321,21 @@ section {
   margin-bottom: var(--space-12);
 }
 
-/* Cohort visual motif — abstract circles */
+/* Cohort visual motif — scattered constellation */
 .hero-motif {
   position: absolute;
-  bottom: 8%;
+  bottom: 6%;
   left: 50%;
   transform: translateX(-50%);
-  display: flex;
-  gap: calc(var(--space-2) * -1);
-  opacity: 0.15;
+  width: clamp(260px, 40vw, 500px);
+  color: var(--color-primary);
+  pointer-events: none;
 }
 
-.hero-motif .dot {
-  width: clamp(40px, 6vw, 80px);
-  height: clamp(40px, 6vw, 80px);
-  border-radius: 50%;
-  border: 2px solid var(--color-primary);
+.hero-motif svg {
+  width: 100%;
+  height: auto;
 }
-
-.hero-motif .dot:nth-child(2) { margin-left: -12px; }
-.hero-motif .dot:nth-child(3) { margin-left: -12px; }
-.hero-motif .dot:nth-child(4) { margin-left: -12px; }
-.hero-motif .dot:nth-child(5) { margin-left: -12px; }
 
 .powered-label {
   font-size: var(--text-xs);
