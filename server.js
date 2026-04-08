@@ -44,6 +44,12 @@ app.use(express.static(path.join(__dirname)));
 
 // ── Routes ────────────────────────────────────────────────────────────────────
 
+app.post('/api/waitlist/signup', (req, res, next) => {
+  console.log('POST /api/waitlist/signup received');
+  console.log('Request body:', JSON.stringify(req.body));
+  next();
+});
+
 const waitlistRouter = require('./routes/waitlist');
 app.use('/api/waitlist', waitlistRouter);
 

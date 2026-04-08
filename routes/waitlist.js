@@ -41,7 +41,9 @@ router.post('/signup', async (req, res) => {
     if (err.code === '23505') {
       return res.status(409).json({ error: 'This email is already on the waitlist.' });
     }
-    console.error('waitlist signup error:', err);
+    console.error('waitlist signup error code:', err.code);
+    console.error('waitlist signup error message:', err.message);
+    console.error('waitlist signup error full:', err);
     return res.status(500).json({ error: 'Something went wrong. Please try again.' });
   }
 });
