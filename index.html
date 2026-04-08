@@ -572,23 +572,59 @@
       const form = document.getElementById('waitlistForm');
       const success = document.getElementById('formSuccess');
       const submitBtn = document.getElementById('submitBtn');
+      const errorMsg = document.createElement('p');
+      errorMsg.className = 'form-error';
+      errorMsg.style.cssText = 'color:#c0392b;font-size:var(--text-sm);margin-top:var(--space-3);text-align:center;display:none;';
+      form && form.appendChild(errorMsg);
 
-      form && form.addEventListener('submit', (e) => {
+      form && form.addEventListener('submit', async (e) => {
         e.preventDefault();
+        errorMsg.style.display = 'none';
 
-        // Basic validation
         const firstName = form.querySelector('#firstName').value.trim();
         const email = form.querySelector('#email').value.trim();
         if (!firstName || !email) return;
 
-        // Simulate submission
+        const interests = Array.from(
+          form.querySelectorAll('input[name="interests"]:checked')
+        ).map(cb => cb.value);
+
+        const payload = {
+          email,
+          name: firstName,
+          neighborhood: form.querySelector('#neighborhood').value.trim() || undefined,
+          age_range: form.querySelector('#ageRange').value || undefined,
+          interests: interests.length ? interests : undefined,
+        };
+
         submitBtn.textContent = 'Joining...';
         submitBtn.disabled = true;
 
-        setTimeout(() => {
-          form.style.display = 'none';
-          success.classList.add('visible');
-        }, 800);
+        try {
+          const res = await fetch('/api/waitlist/signup', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload),
+          });
+
+          if (res.status === 201) {
+            form.style.display = 'none';
+            success.classList.add('visible');
+          } else {
+            const body = await res.json().catch(() => ({}));
+            errorMsg.textContent = res.status === 409
+              ? 'You\'re already on the waitlist — we\'ll be in touch!'
+              : (body.error || 'Something went wrong. Please try again.');
+            errorMsg.style.display = 'block';
+            submitBtn.textContent = 'Join the Waitlist';
+            submitBtn.disabled = false;
+          }
+        } catch (err) {
+          errorMsg.textContent = 'Network error. Please check your connection and try again.';
+          errorMsg.style.display = 'block';
+          submitBtn.textContent = 'Join the Waitlist';
+          submitBtn.disabled = false;
+        }
       });
     })();
 
