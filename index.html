@@ -607,11 +607,16 @@
             body: JSON.stringify(payload),
           });
 
+          console.log('Waitlist signup response status:', res.status);
+
           if (res.status === 201) {
+            const successBody = await res.json().catch(() => ({}));
+            console.log('Waitlist signup success body:', JSON.stringify(successBody));
             form.style.display = 'none';
             success.classList.add('visible');
           } else {
             const body = await res.json().catch(() => ({}));
+            console.log('Waitlist signup error body:', JSON.stringify(body));
             errorMsg.textContent = res.status === 409
               ? 'You\'re already on the waitlist — we\'ll be in touch!'
               : (body.error || 'Something went wrong. Please try again.');
