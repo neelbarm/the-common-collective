@@ -83,6 +83,47 @@ router.get('/', async (req, res) => {
 });
 
 /**
+ * GET /api/waitlist/export
+ * Returns all waitlist entries as a downloadable CSV file.
+ */
+router.get('/export', async (req, res) => {
+  const db = req.app.locals.db;
+
+  try {
+    const result = await db.query(
+      `SELECT id, email, name, neighborhood, age_range, interests, signed_up_at
+       FROM waitlist
+       ORDER BY signed_up_at DESC`
+    );
+
+    const headers = ['id', 'email', 'name', 'neighborhood', 'age_range', 'interests', 'signed_up_at'];
+
+    const escapeField = (value) => {
+      if (value === null || value === undefined) return '';
+      const str = Array.isArray(value) ? value.join(', ') : String(value);
+      // Wrap in quotes if the value contains a comma, double-quote, or newline
+      if (str.includes(',') || str.includes('"') || str.includes('\n')) {
+        return `"${str.replace(/"/g, '""')}"`;
+      }
+      return str;
+    };
+
+    const rows = result.rows.map((row) =>
+      headers.map((h) => escapeField(row[h])).join(',')
+    );
+
+    const csv = [headers.join(','), ...rows].join('\n');
+
+    res.setHeader('Content-Type', 'text/csv');
+    res.setHeader('Content-Disposition', 'attachment; filename="waitlist-export.csv"');
+    return res.send(csv);
+  } catch (err) {
+    console.error('waitlist export error:', err);
+    return res.status(500).json({ error: 'Something went wrong. Please try again.' });
+  }
+});
+
+/**
  * GET /api/waitlist/count
  * Returns just the total count of waitlist signups.
  */
